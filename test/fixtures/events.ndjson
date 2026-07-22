@@ -1,0 +1,5 @@
+{"timestamp":"2026-07-22T08:00:00Z","type":"request.completed","duration_ms":42,"payload":{"route":"/health"}}
+{"timestamp":"2026-07-22T08:00:01Z","type":"sync.started"}
+{"timestamp":"2026-07-22T08:00:02Z","type":"request.completed","duration_ms":18}
+{"timestamp":"2026-07-22T08:00:03Z","type":"sync.completed","duration_ms":80}
+

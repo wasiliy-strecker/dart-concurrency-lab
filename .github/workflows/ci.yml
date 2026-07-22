@@ -1,0 +1,90 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Quality (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Dart
+        uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+
+      - name: Install dependencies
+        run: dart pub get
+
+      - name: Check formatting
+        run: dart format --output=none --set-exit-if-changed .
+
+      - name: Analyze
+        run: dart analyze --fatal-infos
+
+      - name: Test
+        run: dart test
+
+  evidence:
+    name: Coverage, docs, benchmark, and executable
+    needs: quality
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Dart
+        uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+
+      - name: Install dependencies
+        run: dart pub get
+
+      - name: Enforce coverage floor
+        run: |
+          dart test --coverage=coverage/raw
+          dart run coverage:format_coverage \
+            --package=. \
+            --report-on=lib \
+            --in=coverage/raw \
+            --out=coverage/lcov.info \
+            --lcov \
+            --check-ignore
+          dart run tool/check_coverage.dart coverage/lcov.info 80
+
+      - name: Build API documentation
+        run: dart doc --output=doc/api
+
+      - name: Compile CLI executable
+        run: |
+          mkdir -p build
+          dart compile exe bin/ndjson_analyzer.dart -o build/ndjson_analyzer
+
+      - name: Smoke-test compiled CLI
+        run: >-
+          ./build/ndjson_analyzer analyze test/fixtures/events.ndjson
+          --format=json --workers=2 --batch-size=2 --max-in-flight=2
+
+      - name: Run benchmark smoke test
+        run: >-
+          dart run benchmark/pipeline_benchmark.dart
+          --events=2000 --runs=1 --workers=2

@@ -1,6 +1,9 @@
 name: dart_concurrency_lab
 description: Executable Dart concurrency experiments with deterministic tests, benchmarks, and a production-style streaming CLI.
 version: 0.1.0
+homepage: https://github.com/wasiliy-strecker/dart-concurrency-lab
+repository: https://github.com/wasiliy-strecker/dart-concurrency-lab
+issue_tracker: https://github.com/wasiliy-strecker/dart-concurrency-lab/issues
 publish_to: none
 
 environment:
@@ -23,4 +26,3 @@ dev_dependencies:
   coverage: ^1.15.1
   lints: ^6.1.0
   test: ^1.31.2
-

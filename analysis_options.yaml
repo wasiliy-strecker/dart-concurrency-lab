@@ -1,0 +1,27 @@
+include: package:lints/recommended.yaml
+
+analyzer:
+  language:
+    strict-casts: true
+    strict-inference: true
+    strict-raw-types: true
+  errors:
+    missing_required_param: error
+    missing_return: error
+
+linter:
+  rules:
+    always_declare_return_types: true
+    avoid_catches_without_on_clauses: true
+    avoid_dynamic_calls: true
+    avoid_redundant_argument_values: true
+    cancel_subscriptions: true
+    close_sinks: true
+    directives_ordering: true
+    discarded_futures: true
+    only_throw_errors: true
+    prefer_final_locals: true
+    public_member_api_docs: true
+    sort_constructors_first: true
+    unawaited_futures: true
+

@@ -1,0 +1,9 @@
+.dart_tool/
+.idea/
+.packages
+.DS_Store
+build/
+coverage/
+doc/api/
+*.iml
+
